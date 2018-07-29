@@ -1,5 +1,5 @@
 [package]
-name = "RustEngine"
+name = "math"
 version = "0.1.0"
 authors = ["Paul Schwarzwalder <pschwarz99@gmail.com>"]
 
