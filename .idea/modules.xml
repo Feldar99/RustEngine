@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/RustEngine.iml" filepath="$PROJECT_DIR$/RustEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/math/math.iml" filepath="$PROJECT_DIR$/math/math.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rust_engine.iml" filepath="$PROJECT_DIR$/rust_engine.iml" />
     </modules>
   </component>
 </project>
