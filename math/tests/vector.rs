@@ -146,4 +146,16 @@ mod tests {
         assert_approx_eq!(len2, 12.042, EPSILON);
 
     }
+
+    #[test]
+    fn can_cross_vec3s() {
+        let v1 = Vec3{x: 1, y: 2, z: 3};
+        let v2 = Vec3{x: 4, y: 5, z: 6};
+        let cross = v1.cross(v2);
+        assert_eq!(cross.x, -3);
+        assert_eq!(cross.y, 6);
+        assert_eq!(cross.z, -3);
+        assert_eq!(v1.dot(cross), 0);
+        assert_eq!(v2.dot(cross), 0);
+    }
 }
