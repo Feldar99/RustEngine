@@ -3,6 +3,7 @@ extern crate num;
 
 use std::ops::Add;
 use std::ops::Mul;
+use std::ops::Div;
 use std::ops::AddAssign;
 use std::ops::MulAssign;
 use traits::SquareRoot;
@@ -89,12 +90,32 @@ macro_rules! def_vector {
             }
         }
 
+        impl<T: SquareRoot + num::Num + Copy, DivOut: num::Num + Copy, Out: num::Num + Copy> $vector_type<T>
+            where f32:Div<<T as SquareRoot>::Output, Output = DivOut>,
+                T:Mul<DivOut, Output = Out>
+        {
+
+            pub fn normalized(self) -> $vector_type<Out>{
+                self * (1.0 / self.length())
+            }
+        }
+
+        impl<T: SquareRoot + num::Num + Copy, DivOut: num::Num + Copy> $vector_type<T>
+            where f32:Div<<T as SquareRoot>::Output, Output = DivOut>,
+                T:MulAssign<DivOut>
+        {
+
+            pub fn normalize(&mut self) {
+                *self *= 1.0 / self.length();
+            }
+        }
+
+
     }
 }
 def_vector!(Vec4, {x, y, z, w});
 def_vector!(Vec3, {x, y, z});
 def_vector!(Vec2, {x, y});
-
 
 //Implementing dot product outside macro, because + can't be used as a separator in a macro
 impl<T: num::Num + Copy> Vec4<T>{

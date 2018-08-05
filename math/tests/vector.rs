@@ -158,4 +158,39 @@ mod tests {
         assert_eq!(v1.dot(cross), 0);
         assert_eq!(v2.dot(cross), 0);
     }
+
+    #[test]
+    fn can_normalize_vectors() {
+        let mut v4 = Vec4::<f32>{x: 1.0, y: 2.0, z: 3.0, w: 4.0};
+        let mut v3 = Vec3::<f32>{x: 5.0, y: 6.0, z: 7.0};
+        let mut v2 = Vec2::<f32>{x: 8.0, y: 9.0};
+        let norm4 = v4.normalized();
+        let norm3 = v3.normalized();
+        let norm2 = v2.normalized();
+        assert_approx_eq!(norm4.x, 0.183, EPSILON);
+        assert_approx_eq!(norm4.y, 0.365, EPSILON);
+        assert_approx_eq!(norm4.z, 0.548, EPSILON);
+        assert_approx_eq!(norm4.w, 0.730, EPSILON);
+        assert_approx_eq!(norm3.x, 0.477, EPSILON);
+        assert_approx_eq!(norm3.y, 0.572, EPSILON);
+        assert_approx_eq!(norm3.z, 0.667, EPSILON);
+        assert_approx_eq!(norm2.x, 0.664, EPSILON);
+        assert_approx_eq!(norm2.y, 0.747, EPSILON);
+        assert_approx_eq!(norm4.length(), 1.0, EPSILON);
+        assert_approx_eq!(norm3.length(), 1.0, EPSILON);
+        assert_approx_eq!(norm2.length(), 1.0, EPSILON);
+
+        v4.normalize();
+        v3.normalize();
+        v2.normalize();
+        assert_eq!(v4.x, norm4.x);
+        assert_eq!(v4.y, norm4.y);
+        assert_eq!(v4.z, norm4.z);
+        assert_eq!(v4.w, norm4.w);
+        assert_eq!(v3.x, norm3.x);
+        assert_eq!(v3.y, norm3.y);
+        assert_eq!(v3.z, norm3.z);
+        assert_eq!(v2.x, norm2.x);
+        assert_eq!(v2.y, norm2.y);
+    }
 }
