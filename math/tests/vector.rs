@@ -1,5 +1,6 @@
 extern crate math;
 extern crate assert_approx_eq;
+extern crate num;
 
 #[cfg(test)]
 mod tests {
@@ -8,6 +9,8 @@ mod tests {
     use math::vector::Vec4;
     use math::vector::Vec3;
     use math::vector::Vec2;
+
+    use num::Zero;
 
     const EPSILON:f32 = 0.0005;
 
@@ -80,6 +83,58 @@ mod tests {
         assert_eq!(v2.x, 25);
         assert_eq!(v2.y, 27);
     }
+    #[test]
+    fn can_negate_vectors() {
+        let v4 = -Vec4{x: 18, y: 17, z: 16, w: 15};
+        let v3 = -Vec3{x: 14, y: 13, z: 12};
+        let v2 = -Vec2{x: 11, y: 10};
+        assert_eq!(v4.x, -18);
+        assert_eq!(v4.y, -17);
+        assert_eq!(v4.z, -16);
+        assert_eq!(v4.w, -15);
+        assert_eq!(v3.x, -14);
+        assert_eq!(v3.y, -13);
+        assert_eq!(v3.z, -12);
+        assert_eq!(v2.x, -11);
+        assert_eq!(v2.y, -10);
+    }
+
+    #[test]
+    fn can_subtract_vectors() {
+
+        let v4 = Vec4{x: 1, y: 2, z: 3, w: 4} - Vec4{x: 18, y: 17, z: 16, w: 15};
+        let v3 = Vec3{x: 5, y: 6, z: 7}       - Vec3{x: 14, y: 13, z: 12};
+        let v2 = Vec2{x: 8, y: 9}             - Vec2{x: 11, y: 10};
+        assert_eq!(v4.x, -17);
+        assert_eq!(v4.y, -15);
+        assert_eq!(v4.z, -13);
+        assert_eq!(v4.w, -11);
+        assert_eq!(v3.x, -9);
+        assert_eq!(v3.y, -7);
+        assert_eq!(v3.z, -5);
+        assert_eq!(v2.x, -3);
+        assert_eq!(v2.y, -1);
+    }
+
+    #[test]
+    fn can_subtract_assign_vectors() {
+
+        let mut v4 = Vec4{x: 1, y: 2, z: 3, w: 4};
+        let mut v3 = Vec3{x: 5, y: 6, z: 7};
+        let mut v2 = Vec2{x: 8, y: 9};
+        v4 -= Vec4{x: 18, y: 17, z: 16, w: 15};
+        v3 -= Vec3{x: 14, y: 13, z: 12};
+        v2 -= Vec2{x: 11, y: 10};
+        assert_eq!(v4.x, -17);
+        assert_eq!(v4.y, -15);
+        assert_eq!(v4.z, -13);
+        assert_eq!(v4.w, -11);
+        assert_eq!(v3.x, -9);
+        assert_eq!(v3.y, -7);
+        assert_eq!(v3.z, -5);
+        assert_eq!(v2.x, -3);
+        assert_eq!(v2.y, -1);
+    }
 
     #[test]
     fn can_dot_product_vectors() {
@@ -124,6 +179,40 @@ mod tests {
         assert_eq!(v3.z, 21);
         assert_eq!(v2.x, 32);
         assert_eq!(v2.y, 36);
+    }
+
+    #[test]
+    fn can_divide_vectors_by_scalars() {
+        let v4 = Vec4{x: 1, y: 2, z: 3, w: 4} / 2;
+        let v3 = Vec3{x: 5, y: 6, z: 7} / 3;
+        let v2 = Vec2{x: 8, y: 12} / 4;
+        assert_eq!(v4.x, 0);
+        assert_eq!(v4.y, 1);
+        assert_eq!(v4.z, 1);
+        assert_eq!(v4.w, 2);
+        assert_eq!(v3.x, 1);
+        assert_eq!(v3.y, 2);
+        assert_eq!(v3.z, 2);
+        assert_eq!(v2.x, 2);
+        assert_eq!(v2.y, 3);
+    }
+    #[test]
+    fn can_divide_assign_vectors_by_scalars() {
+        let mut v4 = Vec4{x: 1, y: 2, z: 3, w: 4};
+        let mut v3 = Vec3{x: 5, y: 6, z: 7};
+        let mut v2 = Vec2{x: 8, y: 12};
+        v4 /= 2;
+        v3 /= 3;
+        v2 /= 4;
+        assert_eq!(v4.x, 0);
+        assert_eq!(v4.y, 1);
+        assert_eq!(v4.z, 1);
+        assert_eq!(v4.w, 2);
+        assert_eq!(v3.x, 1);
+        assert_eq!(v3.y, 2);
+        assert_eq!(v3.z, 2);
+        assert_eq!(v2.x, 2);
+        assert_eq!(v2.y, 3);
     }
 
     #[test]
@@ -192,5 +281,41 @@ mod tests {
         assert_eq!(v3.z, norm3.z);
         assert_eq!(v2.x, norm2.x);
         assert_eq!(v2.y, norm2.y);
+    }
+
+    #[test]
+    fn has_zero_vector () {
+        let v4 = Vec4::<i32>::zero();
+        let v3 = Vec3::<i32>::zero();
+        let v2 = Vec2::<i32>::zero();
+
+        assert_eq!(v4.x, 0);
+        assert_eq!(v4.y, 0);
+        assert_eq!(v4.z, 0);
+        assert_eq!(v4.w, 0);
+        assert_eq!(v3.x, 0);
+        assert_eq!(v3.y, 0);
+        assert_eq!(v3.z, 0);
+        assert_eq!(v2.x, 0);
+        assert_eq!(v2.y, 0);
+    }
+
+    #[test]
+    fn can_test_for_zero () {
+        let z4 = Vec4::<i32>::zero();
+        let z3 = Vec3::<i32>::zero();
+        let z2 = Vec2::<i32>::zero();
+
+        assert!(z4.is_zero());
+        assert!(z3.is_zero());
+        assert!(z2.is_zero());
+
+        let v4 = Vec4::<f32>{x: 1.0, y: 2.0, z: 3.0, w: 4.0};
+        let v3 = Vec3::<f32>{x: 5.0, y: 6.0, z: 7.0};
+        let v2 = Vec2::<f32>{x: 8.0, y: 9.0};
+
+        assert!(!v4.is_zero());
+        assert!(!v3.is_zero());
+        assert!(!v2.is_zero());
     }
 }

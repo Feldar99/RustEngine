@@ -1,7 +1,7 @@
 use std::f32;
 
 pub trait SquareRoot {
-    type Output;
+    type Output: Copy;
 
     fn sqrt(self) -> Self::Output;
 }

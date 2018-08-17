@@ -4,8 +4,12 @@ extern crate num;
 use std::ops::Add;
 use std::ops::Mul;
 use std::ops::Div;
+use std::ops::Sub;
+use std::ops::Neg;
 use std::ops::AddAssign;
 use std::ops::MulAssign;
+use std::ops::SubAssign;
+use std::ops::DivAssign;
 use traits::SquareRoot;
 
 //    this seems to be blocked by https://github.com/rust-lang/rust/issues/34260
@@ -55,6 +59,37 @@ macro_rules! def_vector {
             }
         }
 
+        impl<T: num::Num + Copy> Neg for $vector_type<T> where T:Neg<Output = T>{
+            type Output = $vector_type<T>;
+
+            fn neg(self) -> $vector_type<T> {
+                $vector_type {
+                    $($component: -self.$component),+
+                }
+            }
+        }
+
+        impl<T: num::Num + Copy, S: num::Num + Copy, Out: num::Num + Copy>
+            Sub<$vector_type<S>> for $vector_type<T>
+            where T:Sub<S, Output = Out>
+        {
+            type Output = $vector_type<Out>;
+
+            fn sub(self, rhs: $vector_type<S>) -> $vector_type<Out> {
+                $vector_type::<Out> {
+                    $($component: self.$component - rhs.$component),+
+                }
+            }
+        }
+
+        impl<T: num::Num + Copy, S: num::Num + Copy> SubAssign<$vector_type<S>> for $vector_type<T>
+            where T:SubAssign<S>
+        {
+            fn sub_assign(&mut self, rhs: $vector_type<S>) {
+                $(self.$component -= rhs.$component;)+
+            }
+        }
+
         impl<T: num::Num + Copy, S: num::Num + Copy, Out: num::Num + Copy> Mul<S>
             for $vector_type<T>
             where T:Mul<S, Output = Out>
@@ -76,6 +111,24 @@ macro_rules! def_vector {
             }
         }
 
+        impl <T: num::Num + Copy, S: Copy, Out: num::Num + Copy> Div<S> for $vector_type<T>
+            where T:Div<S, Output = Out>
+        {
+            type Output = $vector_type<Out>;
+
+            fn div(self, rhs: S) -> $vector_type<Out> {
+                $vector_type {
+                    $($component: self.$component / rhs),+
+                }
+            }
+        }
+
+        impl <T: num::Num + Copy, S: Copy> DivAssign<S> for $vector_type<T> where T:DivAssign<S> {
+            fn div_assign(&mut self, rhs: S) {
+                $(self.$component /= rhs;)+
+            }
+        }
+
         impl<T: num::Num + Copy> $vector_type<T>{
 
             pub fn length_sq(self) -> T {
@@ -90,23 +143,34 @@ macro_rules! def_vector {
             }
         }
 
-        impl<T: SquareRoot + num::Num + Copy, DivOut: num::Num + Copy, Out: num::Num + Copy> $vector_type<T>
-            where f32:Div<<T as SquareRoot>::Output, Output = DivOut>,
-                T:Mul<DivOut, Output = Out>
+        impl<T: SquareRoot + num::Num + Copy, Out: num::Num + Copy> $vector_type<T>
+            where T:Div<<T as SquareRoot>::Output, Output = Out>
         {
 
             pub fn normalized(self) -> $vector_type<Out>{
-                self * (1.0 / self.length())
+                self / self.length()
             }
         }
 
-        impl<T: SquareRoot + num::Num + Copy, DivOut: num::Num + Copy> $vector_type<T>
-            where f32:Div<<T as SquareRoot>::Output, Output = DivOut>,
-                T:MulAssign<DivOut>
+        impl<T: SquareRoot + num::Num + Copy> $vector_type<T>
+            where T:DivAssign<<T as SquareRoot>::Output>
         {
 
             pub fn normalize(&mut self) {
-                *self *= 1.0 / self.length();
+                *self /= self.length();
+            }
+        }
+
+        impl<T: num::Num + Copy> num::Zero for $vector_type<T> {
+            fn zero() -> $vector_type<T> {
+                $vector_type {
+                    $($component: T::zero()),+
+                }
+            }
+
+            fn is_zero(&self) -> bool {
+                $(self.$component.is_zero())&&+
+
             }
         }
 
@@ -116,6 +180,9 @@ macro_rules! def_vector {
 def_vector!(Vec4, {x, y, z, w});
 def_vector!(Vec3, {x, y, z});
 def_vector!(Vec2, {x, y});
+
+
+
 
 //Implementing dot product outside macro, because + can't be used as a separator in a macro
 impl<T: num::Num + Copy> Vec4<T>{
