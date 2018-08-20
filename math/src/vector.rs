@@ -10,7 +10,10 @@ use std::ops::AddAssign;
 use std::ops::MulAssign;
 use std::ops::SubAssign;
 use std::ops::DivAssign;
+use std::ops::Index;
+use std::ops::IndexMut;
 use traits::SquareRoot;
+use num::Zero;
 
 //    this seems to be blocked by https://github.com/rust-lang/rust/issues/34260
 //macro_rules! scalar_times_vector {
@@ -161,7 +164,7 @@ macro_rules! def_vector {
             }
         }
 
-        impl<T: num::Num + Copy> num::Zero for $vector_type<T> {
+        impl<T: num::Num + Copy> Zero for $vector_type<T> {
             fn zero() -> $vector_type<T> {
                 $vector_type {
                     $($component: T::zero()),+
@@ -174,15 +177,36 @@ macro_rules! def_vector {
             }
         }
 
+        impl<T: num::Num + Copy> Index<usize> for $vector_type<T> {
+            type Output = T;
+
+            fn index(&self, index: usize) -> &T {
+                let mut component_index:usize = 0;
+                $(if index == component_index {
+                    return &self.$component
+                }
+                component_index += 1;)+
+                panic!("Index out of range for vector. size: {}, index: {}", component_index, index);
+            }
+        }
+
+        impl<T: num::Num + Copy> IndexMut<usize> for $vector_type<T> {
+
+            fn index_mut(&mut self, index: usize) -> &mut T {
+                let mut component_index:usize = 0;
+                $(if index == component_index {
+                    return &mut self.$component
+                }
+                component_index += 1;)+
+                panic!("Index out of range for vector. size: {}, index: {}", component_index, index);
+            }
+        }
 
     }
 }
 def_vector!(Vec4, {x, y, z, w});
 def_vector!(Vec3, {x, y, z});
 def_vector!(Vec2, {x, y});
-
-
-
 
 //Implementing dot product outside macro, because + can't be used as a separator in a macro
 impl<T: num::Num + Copy> Vec4<T>{

@@ -318,4 +318,59 @@ mod tests {
         assert!(!v3.is_zero());
         assert!(!v2.is_zero());
     }
+
+    #[test]
+    fn can_index_vectors () {
+        let v4 = Vec4{x: 1, y: 2, z: 3, w: 4};
+        let v3 = Vec3{x: 5, y: 6, z: 7};
+        let v2 = Vec2{x: 8, y: 9};
+        assert_eq!(v4[0], 1);
+        assert_eq!(v4[1], 2);
+        assert_eq!(v4[2], 3);
+        assert_eq!(v4[3], 4);
+        assert_eq!(v3[0], 5);
+        assert_eq!(v3[1], 6);
+        assert_eq!(v3[2], 7);
+        assert_eq!(v2[0], 8);
+        assert_eq!(v2[1], 9);
+    }
+
+    #[test]
+    #[should_panic]
+    fn cannot_index_vectors_out_of_bounds () {
+        let v4 = Vec4{x: 1, y: 2, z: 3, w: 4};
+        let _ = v4[4];
+    }
+
+    #[test]
+    fn can_assign_to_vectors_by_index () {
+        let mut v4 = Vec4{x: 1, y: 2, z: 3, w: 4};
+        let mut v3 = Vec3{x: 5, y: 6, z: 7};
+        let mut v2 = Vec2{x: 8, y: 9};
+        v4[0] = 10;
+        v4[1] = 11;
+        v4[2] = 12;
+        v4[3] = 13;
+        v3[0] = 14;
+        v3[1] = 15;
+        v3[2] = 16;
+        v2[0] = 17;
+        v2[1] = 18;
+        assert_eq!(v4.x, 10);
+        assert_eq!(v4.y, 11);
+        assert_eq!(v4.z, 12);
+        assert_eq!(v4.w, 13);
+        assert_eq!(v3.x, 14);
+        assert_eq!(v3.y, 15);
+        assert_eq!(v3.z, 16);
+        assert_eq!(v2.x, 17);
+        assert_eq!(v2.y, 18);
+    }
+
+    #[test]
+    #[should_panic]
+    fn cannot_assign_to_vector_out_of_bounds () {
+        let mut v4 = Vec4{x: 1, y: 2, z: 3, w: 4};
+        v4[4] = 5;;
+    }
 }
