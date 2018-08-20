@@ -202,43 +202,22 @@ macro_rules! def_vector {
             }
         }
 
+        impl<T: num::Num + Copy> $vector_type<T>{
+
+            pub fn dot<S: num::Num + Copy, Out: num::Num>(self, rhs: $vector_type<S>) -> Out
+                where T:Mul<S, Output = Out>
+            {
+                let mut sum:Out = Out::zero();
+                $(sum = sum + self.$component * rhs.$component;)+
+                sum
+            }
+        }
+
     }
 }
 def_vector!(Vec4, {x, y, z, w});
 def_vector!(Vec3, {x, y, z});
 def_vector!(Vec2, {x, y});
-
-//Implementing dot product outside macro, because + can't be used as a separator in a macro
-impl<T: num::Num + Copy> Vec4<T>{
-
-    pub fn dot<S: num::Num + Copy, Out: num::Num>(self, rhs: Vec4<S>) -> Out
-        where T:Mul<S, Output = Out>
-    {
-        self.x * rhs.x +
-            self.y * rhs.y +
-            self.z * rhs.z +
-            self.w * rhs.w
-    }
-}
-impl<T: num::Num + Copy> Vec3<T>{
-
-    pub fn dot<S: num::Num + Copy, Out: num::Num>(self, rhs: Vec3<S>) -> Out
-        where T:Mul<S, Output = Out>
-    {
-        self.x * rhs.x +
-            self.y * rhs.y +
-            self.z * rhs.z
-    }
-}
-impl<T: num::Num + Copy> Vec2<T>{
-
-    pub fn dot<S: num::Num + Copy, Out: num::Num>(self, rhs: Vec2<S>) -> Out
-        where T:Mul<S, Output = Out>
-    {
-        self.x * rhs.x +
-            self.y * rhs.y
-    }
-}
 
 impl<T: num::Num + Copy> Vec3<T> {
 
