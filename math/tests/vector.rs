@@ -1,5 +1,4 @@
 extern crate math;
-extern crate assert_approx_eq;
 extern crate num;
 
 #[cfg(test)]

@@ -5,4 +5,3 @@ authors = ["Paul Schwarzwalder <pschwarz99@gmail.com>"]
 
 [dependencies]
 num = "*"
-assert_approx_eq = "1.0.0"
