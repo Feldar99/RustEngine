@@ -5,7 +5,7 @@ use std::ops::Add;
 //use std::ops::Mul;
 //use std::ops::Div;
 //use std::ops::Sub;
-//use std::ops::Neg;
+use std::ops::Neg;
 use std::ops::AddAssign;
 //use std::ops::MulAssign;
 //use std::ops::SubAssign;
@@ -65,5 +65,20 @@ impl<T, S> AddAssign<Mat4<S>> for Mat4<T>
         for i in 0..4 {
             self.values[i] += rhs.values[i];
         }
+    }
+}
+
+impl<T, Out> Neg for Mat4<T>
+    where T: num::Num + Copy + Neg<Output = Out>,
+          Out: num::Num + Copy
+{
+    type Output = Mat4<Out>;
+
+    fn neg(self) -> Mat4<Out> {
+        let mut result = Mat4::<Out>::zero();
+        for i in 0..4 {
+            result.values[i] = -self.values[i];
+        }
+        result
     }
 }

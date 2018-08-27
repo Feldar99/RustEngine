@@ -62,10 +62,12 @@ macro_rules! def_vector {
             }
         }
 
-        impl<T: num::Num + Copy> Neg for $vector_type<T> where T:Neg<Output = T>{
-            type Output = $vector_type<T>;
+        impl<T: num::Num + Copy, Out: num::Num + Copy> Neg for $vector_type<T>
+            where T:Neg<Output = Out>
+        {
+            type Output = $vector_type<Out>;
 
-            fn neg(self) -> $vector_type<T> {
+            fn neg(self) -> $vector_type<Out> {
                 $vector_type {
                     $($component: -self.$component),+
                 }

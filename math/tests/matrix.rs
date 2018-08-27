@@ -65,6 +65,7 @@ mod tests {
         assert_eq!(m4.values[3].w, 0);
     }
 
+    #[test]
     fn can_test_for_zero_matrix () {
         let z4 = Mat4::<i32>::zero();
         assert!(z4.is_zero());
@@ -92,5 +93,26 @@ mod tests {
         assert_eq!(m4.values[3].y, 44);
         assert_eq!(m4.values[3].z, 46);
         assert_eq!(m4.values[3].w, 48);
+    }
+
+    #[test]
+    fn can_negate_matrices () {
+        let m4 = -test_mat4_1();
+        assert_eq!(m4.values[0].x, -1);
+        assert_eq!(m4.values[0].y, -2);
+        assert_eq!(m4.values[0].z, -3);
+        assert_eq!(m4.values[0].w, -4);
+        assert_eq!(m4.values[1].x, -5);
+        assert_eq!(m4.values[1].y, -6);
+        assert_eq!(m4.values[1].z, -7);
+        assert_eq!(m4.values[1].w, -8);
+        assert_eq!(m4.values[2].x, -9);
+        assert_eq!(m4.values[2].y, -10);
+        assert_eq!(m4.values[2].z, -11);
+        assert_eq!(m4.values[2].w, -12);
+        assert_eq!(m4.values[3].x, -13);
+        assert_eq!(m4.values[3].y, -14);
+        assert_eq!(m4.values[3].z, -15);
+        assert_eq!(m4.values[3].w, -16);
     }
 }
