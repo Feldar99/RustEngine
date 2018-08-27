@@ -300,7 +300,7 @@ mod tests {
     }
 
     #[test]
-    fn can_test_for_zero () {
+    fn can_test_for_zero_vector () {
         let z4 = Vec4::<i32>::zero();
         let z3 = Vec3::<i32>::zero();
         let z2 = Vec2::<i32>::zero();
