@@ -2,7 +2,7 @@ extern crate num;
 
 use vector::Vec4;
 use std::ops::Add;
-//use std::ops::Mul;
+use std::ops::Mul;
 //use std::ops::Div;
 use std::ops::Sub;
 use std::ops::Neg;
@@ -107,5 +107,57 @@ impl<T, S> SubAssign<Mat4<S>> for Mat4<T>
         for i in 0..4 {
             self.values[i] -= rhs.values[i];
         }
+    }
+}
+
+impl<T, S, Out> Mul<S> for Mat4<T>
+    where T: num::Num + Copy + Mul<S, Output = Out>,
+          S: num::Num + Copy,
+          Out: num::Num + Copy
+{
+    type Output = Mat4<Out>;
+
+    fn mul(self, rhs: S) -> Mat4<Out> {
+        let mut result = Mat4::<Out>::zero();
+        for i in 0..4 {
+            result.values[i] = self.values[i] * rhs;
+        }
+        result
+    }
+}
+
+impl<T, S, Out> Mul<Vec4<S>> for Mat4<T>
+    where T: num::Num + Copy + Mul<S, Output = Out>,
+          S: num::Num + Copy,
+          Out: num::Num + Copy
+{
+    type Output = Vec4<Out>;
+
+    fn mul(self, rhs: Vec4<S>) -> Vec4<Out> {
+        let mut v4 = Vec4::<Out>::zero();
+        for i in 0..4 {
+            v4[i] = self.values[i].dot(rhs);
+        }
+        v4
+    }
+}
+
+impl<T, S, Out> Mul<Mat4<S>> for Mat4<T>
+    where T: num::Num + Copy + Mul<S, Output = Out>,
+          S: num::Num + Copy,
+          Out: num::Num + Copy + AddAssign
+{
+    type Output = Mat4<Out>;
+
+    fn mul(self, rhs: Mat4<S>) -> Mat4<Out> {
+        let mut result = Mat4::<Out>::zero();
+        for row in 0..4 {
+            for col in 0..4 {
+                for i in 0..4 {
+                    result.values[row][col] += self.values[row][i] * rhs.values[i][col];
+                }
+            }
+        }
+        result
     }
 }
