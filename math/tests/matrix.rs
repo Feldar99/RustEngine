@@ -96,6 +96,28 @@ mod tests {
     }
 
     #[test]
+    fn can_add_assign_matrices () {
+        let mut m4 = test_mat4_1();
+        m4 += test_mat4_2();
+        assert_eq!(m4.values[0].x, 18);
+        assert_eq!(m4.values[0].y, 20);
+        assert_eq!(m4.values[0].z, 22);
+        assert_eq!(m4.values[0].w, 24);
+        assert_eq!(m4.values[1].x, 26);
+        assert_eq!(m4.values[1].y, 28);
+        assert_eq!(m4.values[1].z, 30);
+        assert_eq!(m4.values[1].w, 32);
+        assert_eq!(m4.values[2].x, 34);
+        assert_eq!(m4.values[2].y, 36);
+        assert_eq!(m4.values[2].z, 38);
+        assert_eq!(m4.values[2].w, 40);
+        assert_eq!(m4.values[3].x, 42);
+        assert_eq!(m4.values[3].y, 44);
+        assert_eq!(m4.values[3].z, 46);
+        assert_eq!(m4.values[3].w, 48);
+    }
+
+    #[test]
     fn can_negate_matrices () {
         let m4 = -test_mat4_1();
         assert_eq!(m4.values[0].x, -1);
@@ -119,6 +141,28 @@ mod tests {
     #[test]
     fn can_subtract_matrices () {
         let m4 = test_mat4_1() - test_mat4_2();
+        assert_eq!(m4.values[0].x, -16);
+        assert_eq!(m4.values[0].y, -16);
+        assert_eq!(m4.values[0].z, -16);
+        assert_eq!(m4.values[0].w, -16);
+        assert_eq!(m4.values[1].x, -16);
+        assert_eq!(m4.values[1].y, -16);
+        assert_eq!(m4.values[1].z, -16);
+        assert_eq!(m4.values[1].w, -16);
+        assert_eq!(m4.values[2].x, -16);
+        assert_eq!(m4.values[2].y, -16);
+        assert_eq!(m4.values[2].z, -16);
+        assert_eq!(m4.values[2].w, -16);
+        assert_eq!(m4.values[3].x, -16);
+        assert_eq!(m4.values[3].y, -16);
+        assert_eq!(m4.values[3].z, -16);
+        assert_eq!(m4.values[3].w, -16);
+    }
+
+    #[test]
+    fn can_subtract_assign_matrices () {
+        let mut m4 = test_mat4_1();
+        m4 -= test_mat4_2();
         assert_eq!(m4.values[0].x, -16);
         assert_eq!(m4.values[0].y, -16);
         assert_eq!(m4.values[0].z, -16);

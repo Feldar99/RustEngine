@@ -8,7 +8,7 @@ use std::ops::Sub;
 use std::ops::Neg;
 use std::ops::AddAssign;
 //use std::ops::MulAssign;
-//use std::ops::SubAssign;
+use std::ops::SubAssign;
 //use std::ops::DivAssign;
 //use std::ops::Index;
 //use std::ops::IndexMut;
@@ -96,5 +96,16 @@ impl<T, S, Out> Sub<Mat4<S>> for Mat4<T>
             result.values[i] = self.values[i] - rhs.values[i];
         }
         result
+    }
+}
+
+impl<T, S> SubAssign<Mat4<S>> for Mat4<T>
+    where T: num::Num + Copy + SubAssign<S>,
+          S: num::Num + Copy
+{
+    fn sub_assign(&mut self, rhs: Mat4<S>) {
+        for i in 0..4 {
+            self.values[i] -= rhs.values[i];
+        }
     }
 }
