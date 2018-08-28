@@ -115,4 +115,25 @@ mod tests {
         assert_eq!(m4.values[3].z, -15);
         assert_eq!(m4.values[3].w, -16);
     }
+
+    #[test]
+    fn can_subtract_matrices () {
+        let m4 = test_mat4_1() - test_mat4_2();
+        assert_eq!(m4.values[0].x, -16);
+        assert_eq!(m4.values[0].y, -16);
+        assert_eq!(m4.values[0].z, -16);
+        assert_eq!(m4.values[0].w, -16);
+        assert_eq!(m4.values[1].x, -16);
+        assert_eq!(m4.values[1].y, -16);
+        assert_eq!(m4.values[1].z, -16);
+        assert_eq!(m4.values[1].w, -16);
+        assert_eq!(m4.values[2].x, -16);
+        assert_eq!(m4.values[2].y, -16);
+        assert_eq!(m4.values[2].z, -16);
+        assert_eq!(m4.values[2].w, -16);
+        assert_eq!(m4.values[3].x, -16);
+        assert_eq!(m4.values[3].y, -16);
+        assert_eq!(m4.values[3].z, -16);
+        assert_eq!(m4.values[3].w, -16);
+    }
 }

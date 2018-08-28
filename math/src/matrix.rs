@@ -4,7 +4,7 @@ use vector::Vec4;
 use std::ops::Add;
 //use std::ops::Mul;
 //use std::ops::Div;
-//use std::ops::Sub;
+use std::ops::Sub;
 use std::ops::Neg;
 use std::ops::AddAssign;
 //use std::ops::MulAssign;
@@ -78,6 +78,22 @@ impl<T, Out> Neg for Mat4<T>
         let mut result = Mat4::<Out>::zero();
         for i in 0..4 {
             result.values[i] = -self.values[i];
+        }
+        result
+    }
+}
+
+impl<T, S, Out> Sub<Mat4<S>> for Mat4<T>
+    where T: num::Num + Copy + Sub<S, Output = Out>,
+          S: num::Num + Copy,
+          Out: num::Num + Copy
+{
+    type Output = Mat4<Out>;
+
+    fn sub(self, rhs: Mat4<S>) -> Mat4<Out> {
+        let mut result = Mat4::<Out>::zero();
+        for i in 0..4 {
+            result.values[i] = self.values[i] - rhs.values[i];
         }
         result
     }
