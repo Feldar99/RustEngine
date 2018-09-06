@@ -10,7 +10,7 @@ use std::ops::AddAssign;
 use std::ops::MulAssign;
 use std::ops::SubAssign;
 use std::ops::DivAssign;
-//use std::ops::Index;
+use std::ops::Index;
 //use std::ops::IndexMut;
 //use traits::SquareRoot;
 use num::Zero;
@@ -206,3 +206,18 @@ impl<T, S> DivAssign<S> for Mat4<T>
     }
 }
 
+impl<T> Index<usize> for Mat4<T> where T: num::Num + Copy {
+    type Output = Vec4<T>;
+
+    fn index(&self, index: usize) -> &Vec4<T> {
+        &self.values[index]
+    }
+}
+
+impl<T> Index<(usize, usize)> for Mat4<T> where T: num::Num + Copy {
+    type Output = T;
+
+    fn index(&self, index: (usize, usize)) -> &T {
+        &self.values[index.0][index.1]
+    }
+}

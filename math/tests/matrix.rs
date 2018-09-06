@@ -301,6 +301,34 @@ mod tests {
         assert_eq!(m4.values[3].w, 8);
     }
 
+    #[test]
+    fn can_index_matrices () {
+        let m4 = test_mat4_1();
+        assert_eq!(m4[0].x, 1);
+        assert_eq!(m4[0].y, 2);
+        assert_eq!(m4[0].z, 3);
+        assert_eq!(m4[0].w, 4);
+        assert_eq!(m4[1].x, 5);
+        assert_eq!(m4[1].y, 6);
+        assert_eq!(m4[1].z, 7);
+        assert_eq!(m4[1].w, 8);
+        assert_eq!(m4[2].x, 9);
+        assert_eq!(m4[2].y, 10);
+        assert_eq!(m4[2].z, 11);
+        assert_eq!(m4[2].w, 12);
+        assert_eq!(m4[3].x, 13);
+        assert_eq!(m4[3].y, 14);
+        assert_eq!(m4[3].z, 15);
+        assert_eq!(m4[3].w, 16);
+    }
+
+    #[test]
+    #[should_panic]
+    fn cannot_index_matrices_out_of_bounds () {
+        let m4 = test_mat4_1();
+        let _ = m4[4];
+    }
+
 //    fn test_mat4_1() -> Mat4<i32> {
 //        Mat4{values: [Vec4{x: 1,  y: 2,  z: 3,  w: 4 },
 //            Vec4{x: 5,  y: 6,  z: 7,  w: 8 },
