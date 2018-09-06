@@ -279,6 +279,28 @@ mod tests {
         assert_eq!(m4.values[3].w, 8);
     }
 
+    #[test]
+    fn can_divide_assign_matrices_by_scalars () {
+        let mut m4 = test_mat4_1();
+        m4 /= 2;
+        assert_eq!(m4.values[0].x, 0);
+        assert_eq!(m4.values[0].y, 1);
+        assert_eq!(m4.values[0].z, 1);
+        assert_eq!(m4.values[0].w, 2);
+        assert_eq!(m4.values[1].x, 2);
+        assert_eq!(m4.values[1].y, 3);
+        assert_eq!(m4.values[1].z, 3);
+        assert_eq!(m4.values[1].w, 4);
+        assert_eq!(m4.values[2].x, 4);
+        assert_eq!(m4.values[2].y, 5);
+        assert_eq!(m4.values[2].z, 5);
+        assert_eq!(m4.values[2].w, 6);
+        assert_eq!(m4.values[3].x, 6);
+        assert_eq!(m4.values[3].y, 7);
+        assert_eq!(m4.values[3].z, 7);
+        assert_eq!(m4.values[3].w, 8);
+    }
+
 //    fn test_mat4_1() -> Mat4<i32> {
 //        Mat4{values: [Vec4{x: 1,  y: 2,  z: 3,  w: 4 },
 //            Vec4{x: 5,  y: 6,  z: 7,  w: 8 },

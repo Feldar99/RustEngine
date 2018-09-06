@@ -9,7 +9,7 @@ use std::ops::Neg;
 use std::ops::AddAssign;
 use std::ops::MulAssign;
 use std::ops::SubAssign;
-//use std::ops::DivAssign;
+use std::ops::DivAssign;
 //use std::ops::Index;
 //use std::ops::IndexMut;
 //use traits::SquareRoot;
@@ -194,3 +194,15 @@ impl<T, S, Out> Div<S> for Mat4<T>
         result
     }
 }
+
+impl<T, S> DivAssign<S> for Mat4<T>
+    where T: num::Num + Copy + DivAssign<S>,
+          S: Copy
+{
+    fn div_assign(&mut self, rhs: S) {
+        for i in 0..4 {
+            self.values[i] /= rhs;
+        }
+    }
+}
+
