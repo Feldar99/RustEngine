@@ -3,11 +3,11 @@ extern crate num;
 use vector::Vec4;
 use std::ops::Add;
 use std::ops::Mul;
-//use std::ops::Div;
+use std::ops::Div;
 use std::ops::Sub;
 use std::ops::Neg;
 use std::ops::AddAssign;
-//use std::ops::MulAssign;
+use std::ops::MulAssign;
 use std::ops::SubAssign;
 //use std::ops::DivAssign;
 //use std::ops::Index;
@@ -157,6 +157,39 @@ impl<T, S, Out> Mul<Mat4<S>> for Mat4<T>
                     result.values[row][col] += self.values[row][i] * rhs.values[i][col];
                 }
             }
+        }
+        result
+    }
+}
+
+impl<T, S, MulOut> MulAssign<Mat4<S>> for Mat4<T>
+    where T: num::Num + Copy + Mul<S, Output = MulOut> + AddAssign<MulOut>,
+          S: num::Num + Copy,
+{
+    fn mul_assign(&mut self, rhs: Mat4<S>) {
+        for row in 0..4 {
+            let mut row_values = Vec4::<T>::zero();
+            for col in 0..4 {
+                for i in 0..4 {
+                    row_values[col] += self.values[row][i] * rhs.values[i][col];
+                }
+            }
+            self.values[row] = row_values;
+        }
+    }
+}
+
+impl<T, S, Out> Div<S> for Mat4<T>
+    where T: num::Num + Copy + Div<S, Output = Out>,
+          S: Copy,
+          Out: num::Num + Copy
+{
+    type Output = Mat4<Out>;
+
+    fn div(self, rhs: S) -> Mat4<Out> {
+        let mut result = Mat4::<Out>::zero();
+        for i in 0..4 {
+            result.values[i] = self.values[i] / rhs;
         }
         result
     }

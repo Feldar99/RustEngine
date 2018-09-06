@@ -108,7 +108,7 @@ macro_rules! def_vector {
             }
         }
 
-        impl<T: num::Num + Copy, S: num::Num + Copy> MulAssign<S> for $vector_type<T>
+        impl<T: num::Num + Copy, S: Copy> MulAssign<S> for $vector_type<T>
             where T:MulAssign<S>
         {
             fn mul_assign(&mut self, rhs: S) {
