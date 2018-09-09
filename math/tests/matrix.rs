@@ -329,6 +329,50 @@ mod tests {
         let _ = m4[4];
     }
 
+    #[test]
+    fn can_assign_to_matrices_by_index () {
+        let mut m4 = test_mat4_1();
+        m4[0].x = 17;
+        m4[0].y = 18;
+        m4[0].z = 19;
+        m4[0].w = 20;
+        m4[1].x = 21;
+        m4[1].y = 22;
+        m4[1].z = 23;
+        m4[1].w = 24;
+        m4[2].x = 25;
+        m4[2].y = 26;
+        m4[2].z = 27;
+        m4[2].w = 28;
+        m4[3].x = 29;
+        m4[3].y = 30;
+        m4[3].z = 31;
+        m4[3].w = 32;
+        assert_eq!(m4[0].x, 17);
+        assert_eq!(m4[0].y, 18);
+        assert_eq!(m4[0].z, 19);
+        assert_eq!(m4[0].w, 20);
+        assert_eq!(m4[1].x, 21);
+        assert_eq!(m4[1].y, 22);
+        assert_eq!(m4[1].z, 23);
+        assert_eq!(m4[1].w, 24);
+        assert_eq!(m4[2].x, 25);
+        assert_eq!(m4[2].y, 26);
+        assert_eq!(m4[2].z, 27);
+        assert_eq!(m4[2].w, 28);
+        assert_eq!(m4[3].x, 29);
+        assert_eq!(m4[3].y, 30);
+        assert_eq!(m4[3].z, 31);
+        assert_eq!(m4[3].w, 32);
+    }
+
+    #[test]
+    #[should_panic]
+    fn cannot_assign_to_matrix_out_of_bounds () {
+        let mut m4 = test_mat4_1();
+        m4[4] = test_vec4();
+    }
+
 //    fn test_mat4_1() -> Mat4<i32> {
 //        Mat4{values: [Vec4{x: 1,  y: 2,  z: 3,  w: 4 },
 //            Vec4{x: 5,  y: 6,  z: 7,  w: 8 },

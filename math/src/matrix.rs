@@ -11,7 +11,7 @@ use std::ops::MulAssign;
 use std::ops::SubAssign;
 use std::ops::DivAssign;
 use std::ops::Index;
-//use std::ops::IndexMut;
+use std::ops::IndexMut;
 //use traits::SquareRoot;
 use num::Zero;
 
@@ -221,3 +221,19 @@ impl<T> Index<(usize, usize)> for Mat4<T> where T: num::Num + Copy {
         &self.values[index.0][index.1]
     }
 }
+
+impl<T> IndexMut<usize> for Mat4<T> where T: num::Num + Copy {
+
+    fn index_mut(&mut self, index: usize) -> &mut Vec4<T> {
+        &mut self.values[index]
+    }
+}
+
+impl<T> IndexMut<(usize, usize)> for Mat4<T> where T: num::Num + Copy {
+
+    fn index_mut(&mut self, index: (usize, usize)) -> &mut T {
+
+        &mut self.values[index.0][index.1]
+    }
+}
+
