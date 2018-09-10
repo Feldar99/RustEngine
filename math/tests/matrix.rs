@@ -8,6 +8,7 @@ mod tests {
     use math::vector::Vec4;
 
     use num::Zero;
+    use num::One;
 
     fn test_mat4_1() -> Mat4<i32> {
         Mat4{values: [Vec4{x: 1,  y: 2,  z: 3,  w: 4 },
@@ -76,6 +77,27 @@ mod tests {
 
         let m4 = test_mat4_1();
         assert!(!m4.is_zero());
+    }
+
+    #[test]
+    fn has_identity_matrix () {
+        let m4 = Mat4::<i32>::one();
+        assert_eq!(m4.values[0].x, 1);
+        assert_eq!(m4.values[0].y, 0);
+        assert_eq!(m4.values[0].z, 0);
+        assert_eq!(m4.values[0].w, 0);
+        assert_eq!(m4.values[1].x, 0);
+        assert_eq!(m4.values[1].y, 1);
+        assert_eq!(m4.values[1].z, 0);
+        assert_eq!(m4.values[1].w, 0);
+        assert_eq!(m4.values[2].x, 0);
+        assert_eq!(m4.values[2].y, 0);
+        assert_eq!(m4.values[2].z, 1);
+        assert_eq!(m4.values[2].w, 0);
+        assert_eq!(m4.values[3].x, 0);
+        assert_eq!(m4.values[3].y, 0);
+        assert_eq!(m4.values[3].z, 0);
+        assert_eq!(m4.values[3].w, 1);
     }
 
     #[test]

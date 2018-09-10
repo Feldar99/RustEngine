@@ -14,19 +14,20 @@ use std::ops::Index;
 use std::ops::IndexMut;
 //use traits::SquareRoot;
 use num::Zero;
+use num::One;
 
 #[derive(Copy, Clone)]
-pub struct Mat4<T: num::Num + Copy> {
+pub struct Mat4<T> where T: num::Num + Copy {
     pub values:[Vec4<T>; 4]
 }
 
-impl<T: num::Num + Copy> Mat4<T> {
+impl<T> Mat4<T> where T: num::Num + Copy {
 
 //    const WIDTH:usize = 4;
 //    const HEIGHT:usize = 4;
 }
 
-impl<T: num::Num + Copy> Zero for Mat4<T> {
+impl<T> Zero for Mat4<T> where T: num::Num + Copy {
     fn zero() -> Mat4<T> {
         Mat4 {values: [Vec4::zero(), Vec4::zero(), Vec4::zero(), Vec4::zero()]}
     }
@@ -38,6 +39,20 @@ impl<T: num::Num + Copy> Zero for Mat4<T> {
             }
         }
         true
+    }
+}
+
+impl<T> One for Mat4<T>
+    where T: num::Num + Copy,
+          Mat4<T>:Mul<Mat4<T>, Output = Mat4<T>>
+{
+    fn one() -> Mat4<T> {
+        Mat4::<T> {
+            values: [Vec4 { x: T::one(), y: T::zero(), z: T::zero(), w: T::zero() },
+                     Vec4 { x: T::zero(), y: T::one(), z: T::zero(), w: T::zero() },
+                     Vec4 { x: T::zero(), y: T::zero(), z: T::one(), w: T::zero() },
+                     Vec4 { x: T::zero(), y: T::zero(), z: T::zero(), w: T::one() }]
+        }
     }
 }
 
