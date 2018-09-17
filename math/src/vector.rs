@@ -139,6 +139,16 @@ macro_rules! def_vector {
             pub fn length_sq(self) -> T {
                 self.dot(self)
             }
+
+        }
+
+        impl<T: num::Float + Copy> $vector_type<T> {
+
+            pub fn is_unit(self) -> bool {
+                let length_sq = self.length_sq();
+                (length_sq - T::one()).abs() < T::epsilon()
+            }
+
         }
 
         impl<T: SquareRoot + num::Num + Copy> $vector_type<T>{

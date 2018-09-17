@@ -6,6 +6,7 @@ mod tests {
 
     use math::matrix::Mat4;
     use math::vector::Vec4;
+    use math::vector::Vec3;
 
     use num::Zero;
     use num::One;
@@ -25,7 +26,11 @@ mod tests {
     }
 
     fn test_vec4() -> Vec4<i32> {
-        Vec4{x: 1, y: 2, z: 3, w: 4}
+        Vec4{x: 1, y: 2, z: 3, w: 1}
+    }
+
+    fn test_vec3() -> Vec3<i32> {
+        Vec3{x: 5, y: 6, z: 7}
     }
 
     #[test]
@@ -231,10 +236,10 @@ mod tests {
     #[test]
     fn can_multiply_matrices_by_vectors () {
         let v4 = test_mat4_1() * test_vec4();
-        assert_eq!(v4.x, 30);
-        assert_eq!(v4.y, 70);
-        assert_eq!(v4.z, 110);
-        assert_eq!(v4.w, 150);
+        assert_eq!(v4.x, 18);
+        assert_eq!(v4.y, 46);
+        assert_eq!(v4.z, 74);
+        assert_eq!(v4.w, 102);
     }
 
     #[test]
@@ -393,6 +398,64 @@ mod tests {
     fn cannot_assign_to_matrix_out_of_bounds () {
         let mut m4 = test_mat4_1();
         m4[4] = test_vec4();
+    }
+
+    #[test]
+    fn can_create_scale_matrix () {
+        let v4 = test_vec4();
+        let v3 = test_vec3();
+        let m4 = Mat4::<i32>::scale(&v3);
+        assert_eq!(m4[0].x, 5);
+        assert_eq!(m4[0].y, 0);
+        assert_eq!(m4[0].z, 0);
+        assert_eq!(m4[0].w, 0);
+        assert_eq!(m4[1].x, 0);
+        assert_eq!(m4[1].y, 6);
+        assert_eq!(m4[1].z, 0);
+        assert_eq!(m4[1].w, 0);
+        assert_eq!(m4[2].x, 0);
+        assert_eq!(m4[2].y, 0);
+        assert_eq!(m4[2].z, 7);
+        assert_eq!(m4[2].w, 0);
+        assert_eq!(m4[3].x, 0);
+        assert_eq!(m4[3].y, 0);
+        assert_eq!(m4[3].z, 0);
+        assert_eq!(m4[3].w, 1);
+
+        let scaled = m4 * v4;
+
+        assert_eq!(scaled.x, v4.x * v3.x);
+        assert_eq!(scaled.y, v4.y * v3.y);
+        assert_eq!(scaled.z, v4.z * v3.z);
+    }
+
+    #[test]
+    fn can_create_translation_matrix () {
+        let v4 = test_vec4();
+        let v3 = test_vec3();
+        let m4 = Mat4::<i32>::translate(&v3);
+        assert_eq!(m4[0].x, 1);
+        assert_eq!(m4[0].y, 0);
+        assert_eq!(m4[0].z, 0);
+        assert_eq!(m4[0].w, 5);
+        assert_eq!(m4[1].x, 0);
+        assert_eq!(m4[1].y, 1);
+        assert_eq!(m4[1].z, 0);
+        assert_eq!(m4[1].w, 6);
+        assert_eq!(m4[2].x, 0);
+        assert_eq!(m4[2].y, 0);
+        assert_eq!(m4[2].z, 1);
+        assert_eq!(m4[2].w, 7);
+        assert_eq!(m4[3].x, 0);
+        assert_eq!(m4[3].y, 0);
+        assert_eq!(m4[3].z, 0);
+        assert_eq!(m4[3].w, 1);
+
+        let translated = m4 * v4;
+        let added = Vec3 {x: v4.x, y: v4.y, z: v4.z} + v3;
+        assert_eq!(translated.x, added.x);
+        assert_eq!(translated.y, added.y);
+        assert_eq!(translated.z, added.z);
     }
 
 //    fn test_mat4_1() -> Mat4<i32> {
