@@ -11,22 +11,24 @@ mod tests {
 
     use num::Zero;
 
-    const EPSILON:f32 = 0.0005;
+    const EPSILON:f32 = 0.005;
 
     macro_rules! assert_approx_eq {
         ($left:expr, $right:expr, $epsilon:expr) => {
-            assert!(($left) < ($right) + ($epsilon),
-                "\nleft: `{}`,\n right: `{}`,\n epsilon: {}\n\n",
-                $left,
-                $right,
-                $epsilon
-            );
-            assert!(($left) > ($right) - ($epsilon),
-                "\nleft: `{}`,\n right: `{}`,\n epsilon: {}\n\n",
-                $left,
-                $right,
-                $epsilon
-            );
+            if $left != $right {
+                assert!(($left) < ($right) * (1.0 + $epsilon),
+                    "\nleft: `{}`,\n right: `{} - {}`\n\n",
+                    $left,
+                    ($right) * (1.0 - $epsilon),
+                    ($right) * (1.0 + $epsilon)
+                );
+                assert!(($left) > ($right) * (1.0 - $epsilon),
+                    "\nleft: `{}`,\n right: `{} - {}`\n\n",
+                    $left,
+                    ($right) * (1.0 - $epsilon),
+                    ($right) * (1.0 + $epsilon)
+                );
+            }
         }
     }
 
@@ -229,9 +231,9 @@ mod tests {
         let len4 = Vec4{x: 1, y: 2, z: 3, w: 4}.length();
         let len3 = Vec3{x: 5, y: 6, z: 7}.length();
         let len2 = Vec2{x: 8, y: 9}.length();
-        assert_approx_eq!(len4, 5.477, EPSILON);
-        assert_approx_eq!(len3, 10.488, EPSILON);
-        assert_approx_eq!(len2, 12.042, EPSILON);
+        assert_approx_eq!(len4, 5.477f32, EPSILON);
+        assert_approx_eq!(len3, 10.488f32, EPSILON);
+        assert_approx_eq!(len2, 12.042f32, EPSILON);
 
     }
 
@@ -255,18 +257,18 @@ mod tests {
         let norm4 = v4.normalized();
         let norm3 = v3.normalized();
         let norm2 = v2.normalized();
-        assert_approx_eq!(norm4.x, 0.183, EPSILON);
-        assert_approx_eq!(norm4.y, 0.365, EPSILON);
-        assert_approx_eq!(norm4.z, 0.548, EPSILON);
-        assert_approx_eq!(norm4.w, 0.730, EPSILON);
-        assert_approx_eq!(norm3.x, 0.477, EPSILON);
-        assert_approx_eq!(norm3.y, 0.572, EPSILON);
-        assert_approx_eq!(norm3.z, 0.667, EPSILON);
-        assert_approx_eq!(norm2.x, 0.664, EPSILON);
-        assert_approx_eq!(norm2.y, 0.747, EPSILON);
-        assert_approx_eq!(norm4.length(), 1.0, EPSILON);
-        assert_approx_eq!(norm3.length(), 1.0, EPSILON);
-        assert_approx_eq!(norm2.length(), 1.0, EPSILON);
+        assert_approx_eq!(norm4.x, 0.183f32, EPSILON);
+        assert_approx_eq!(norm4.y, 0.365f32, EPSILON);
+        assert_approx_eq!(norm4.z, 0.548f32, EPSILON);
+        assert_approx_eq!(norm4.w, 0.730f32, EPSILON);
+        assert_approx_eq!(norm3.x, 0.477f32, EPSILON);
+        assert_approx_eq!(norm3.y, 0.572f32, EPSILON);
+        assert_approx_eq!(norm3.z, 0.667f32, EPSILON);
+        assert_approx_eq!(norm2.x, 0.664f32, EPSILON);
+        assert_approx_eq!(norm2.y, 0.747f32, EPSILON);
+        assert_approx_eq!(norm4.length(), 1f32, EPSILON);
+        assert_approx_eq!(norm3.length(), 1f32, EPSILON);
+        assert_approx_eq!(norm2.length(), 1f32, EPSILON);
 
         v4.normalize();
         v3.normalize();
@@ -280,6 +282,9 @@ mod tests {
         assert_eq!(v3.z, norm3.z);
         assert_eq!(v2.x, norm2.x);
         assert_eq!(v2.y, norm2.y);
+        assert_approx_eq!(v4.length(), 1f32, EPSILON);
+        assert_approx_eq!(v3.length(), 1f32, EPSILON);
+        assert_approx_eq!(v2.length(), 1f32, EPSILON);
     }
 
     #[test]
@@ -371,5 +376,35 @@ mod tests {
     fn cannot_assign_to_vector_out_of_bounds () {
         let mut v4 = Vec4{x: 1, y: 2, z: 3, w: 4};
         v4[4] = 5;;
+    }
+
+    #[test]
+    fn can_calculate_angle_between_vectors () {
+        let right_angle        = Vec2{x: 1.0, y: 0.0}.angle(Vec2{x: 0.0, y:  1.0});
+        let acute_angle        = Vec2{x: 1.0, y: 0.0}.angle(Vec2{x: 1.0, y: -1.0});
+        let collinear          = Vec2{x: 2.0, y: 1.0}.angle(Vec2{x: 6.0, y:  3.0});
+        let opposite_collinear =
+            Vec3{x: 3.0, y: 2.0, z: -1.0}.angle(Vec3{x: -6.0, y: -4.0, z: 2.0});
+        let obtuse             =
+            Vec4{x: 0.0, y: 1.0, z:  0.0, w: 0.0}.angle(Vec4{x: 0.0, y: -1.0, z: 0.0, w: 1.0});
+        assert_approx_eq!(right_angle        , 90f32,  EPSILON);
+        assert_approx_eq!(acute_angle        , 45f32,  EPSILON);
+        assert_approx_eq!(collinear          , 0f32,   EPSILON);
+        assert_approx_eq!(opposite_collinear , 180f32, EPSILON);
+        assert_approx_eq!(obtuse             , 135f32, EPSILON);
+
+        let right_angle_reversed        = Vec2{x: 0.0, y:  1.0}.angle(Vec2{x: 1.0, y: 0.0});
+        let acute_angle_reversed        = Vec2{x: 1.0, y: -1.0}.angle(Vec2{x: 1.0, y: 0.0});
+        let collinear_reversed          = Vec2{x: 6.0, y:  3.0}.angle(Vec2{x: 2.0, y: 1.0});
+        let opposite_collinear_reversed =
+            Vec3{x: -6.0, y: -4.0, z: 2.0}.angle(Vec3{x: 3.0, y: 2.0, z: -1.0});
+        let obtuse_reversed             =
+            Vec4{x: 0.0, y: -1.0, z: 0.0, w: 1.0}.angle(Vec4{x: 0.0, y: 1.0, z:  0.0, w: 0.0});
+
+        assert_approx_eq!(right_angle        , right_angle_reversed,        EPSILON);
+        assert_approx_eq!(acute_angle        , acute_angle_reversed,        EPSILON);
+        assert_approx_eq!(collinear          , collinear_reversed,          EPSILON);
+        assert_approx_eq!(opposite_collinear , opposite_collinear_reversed, EPSILON);
+        assert_approx_eq!(obtuse             , obtuse_reversed,             EPSILON);
     }
 }

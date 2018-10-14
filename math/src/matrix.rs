@@ -2,6 +2,7 @@ extern crate num;
 
 use vector::Vec4;
 use vector::Vec3;
+use vector::Vec2;
 use std::ops::Add;
 use std::ops::Mul;
 use std::ops::Div;
@@ -13,6 +14,7 @@ use std::ops::SubAssign;
 use std::ops::DivAssign;
 use std::ops::Index;
 use std::ops::IndexMut;
+use std::fmt::Debug;
 //use traits::SquareRoot;
 use num::Zero;
 use num::One;
@@ -45,10 +47,7 @@ macro_rules! def_matrix {
 
         impl<T> Zero for $matrix_type<T> where T: num::Num + Copy {
             fn zero() -> $matrix_type<T> {
-                $matrix_type { values: [$row_type::zero(),
-                                        $row_type::zero(),
-                                        $row_type::zero(),
-                                        $row_type::zero()] }
+                $matrix_type { values: [$row_type::zero(); $rows] }
             }
 
             fn is_zero(&self) -> bool {
@@ -62,15 +61,14 @@ macro_rules! def_matrix {
         }
 
         impl<T> One for $matrix_type<T>
-            where T: num::Num + Copy
+            where T: num::Num + Copy + One
         {
             fn one() -> $matrix_type<T> {
-                Mat4::<T> {
-                    values: [$row_type { x: T::one(), y: T::zero(), z: T::zero(), w: T::zero() },
-                             $row_type { x: T::zero(), y: T::one(), z: T::zero(), w: T::zero() },
-                             $row_type { x: T::zero(), y: T::zero(), z: T::one(), w: T::zero() },
-                             $row_type { x: T::zero(), y: T::zero(), z: T::zero(), w: T::one() }]
+                let mut result = $matrix_type::<T>::zero();
+                for i in 0..$rows {
+                    result[i][i] = T::one();
                 }
+                result
             }
         }
 
@@ -90,7 +88,7 @@ macro_rules! def_matrix {
             }
         }
 
-        impl<T, S> AddAssign<Mat4<S>> for $matrix_type<T>
+        impl<T, S> AddAssign<$matrix_type<S>> for $matrix_type<T>
             where T: num::Num + Copy + AddAssign<S>,
                   S: num::Num + Copy
         {
@@ -151,7 +149,7 @@ macro_rules! def_matrix {
             type Output = $matrix_type<Out>;
 
             fn mul(self, rhs: S) -> $matrix_type<Out> {
-                let mut result = Mat4::<Out>::zero();
+                let mut result = $matrix_type::<Out>::zero();
                 for i in 0..$rows {
                     result.values[i] = self.values[i] * rhs;
                 }
@@ -216,7 +214,7 @@ macro_rules! def_matrix {
                   S: Copy,
                   Out: num::Num + Copy
         {
-            type Output = Mat4<Out>;
+            type Output = $matrix_type<Out>;
 
             fn div(self, rhs: S) -> $matrix_type<Out> {
                 let mut result = $matrix_type::<Out>::zero();
@@ -239,9 +237,9 @@ macro_rules! def_matrix {
         }
 
         impl<T> Index<usize> for $matrix_type<T> where T: num::Num + Copy {
-            type Output = Vec4<T>;
+            type Output = $row_type<T>;
 
-            fn index(&self, index: usize) -> &Vec4<T> {
+            fn index(&self, index: usize) -> &$row_type<T> {
                 &self.values[index]
             }
         }
@@ -255,7 +253,7 @@ macro_rules! def_matrix {
         }
 
         impl<T> IndexMut<usize> for $matrix_type<T> where T: num::Num + Copy {
-            fn index_mut(&mut self, index: usize) -> &mut Vec4<T> {
+            fn index_mut(&mut self, index: usize) -> &mut $row_type<T> {
                 &mut self.values[index]
             }
         }
@@ -265,19 +263,73 @@ macro_rules! def_matrix {
                 &mut self.values[index.0][index.1]
             }
         }
+
+        impl<T> $matrix_type<T> where T: num::Num + Copy {
+            pub fn tensor(v: &$row_type<T>, w: &$row_type<T>) -> $matrix_type<T> {
+                let mut result = $matrix_type::<T>::zero();
+                for row in 0..$rows {
+                    for col in 0..$rows {
+                        result[row][col] = v[row] * w[col];
+                    }
+                }
+                result
+            }
+        }
+
+        impl<T> $matrix_type<T> where T: num::Num + Copy {
+            pub fn transpose (&mut self) {
+                for row in 0..$rows {
+                    for col in 0..row + 1 {
+                        let temp = self[row][col];
+                        self[row][col] = self[col][row];
+                        self[col][row] = temp;
+                    }
+                }
+            }
+
+            pub fn transposed (&self) -> $matrix_type<T> {
+                let mut result = $matrix_type::<T>::zero();
+                for row in 0..$rows {
+                    for col in 0..row + 1 {
+                        result[row][col] = self[col][row];
+                        result[col][row] = self[row][col];
+                    }
+                }
+                result
+            }
+        }
     }
 }
 def_matrix!(Mat4, Vec4, Vec3, 4);
+def_matrix!(Mat3, Vec3, Vec2, 3);
 
-//impl<T> Mat4<T> where T: Float{
-//
-//    fn rotate<S>(axis:&Vec3<S>, angle:T) -> Mat4<T> where S:Float + Copy {
-//
-//        assert!(axis.is_unit());
-//        let mut result = Mat4::<T>::one();
-//        let cos = angle.cos();
-//        let sin = angle.sin();
-//        result[0][0] = cos + axis.x * axis.x * (1 - cos)
-//        result[]
-//    }
-//}
+impl<T> Mat3<T> where T:num::Num + Copy + Neg<Output=T> {
+
+    pub fn cross_product(v : &Vec3<T>) -> Mat3<T> {
+        Mat3::<T> { values: [Vec3::<T>{x: T::zero(), y: -v.z,      z:  v.y     },
+                             Vec3::<T>{x:  v.z,      y: T::zero(), z: -v.x     },
+                             Vec3::<T>{x: -v.y,      y:  v.x,      z: T::zero()}]
+                  }
+    }
+}
+
+impl<T> Mat4<T> where T: Float + Copy + AddAssign<T> + Debug{
+
+    pub fn rotate(axis: &Vec3<T>, angle:T) -> Mat4<T> {
+
+        assert!(axis.is_unit());
+        let cos = angle.to_radians().cos();
+        let sin = angle.to_radians().sin();
+        let mut result3 = Mat3::<T>::one() * cos;
+        result3 += Mat3::<T>::cross_product(axis) * sin;
+        result3 += Mat3::<T>::tensor(axis, axis) * (T::one() - cos);
+        let mut result4 = Mat4::<T>::zero();
+        for row in 0..3 {
+            for col in 0..3 {
+                result4[row][col] = result3[row][col];
+            }
+        }
+        result4[3][3] = T::one();
+        result4
+    }
+}

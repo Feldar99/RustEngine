@@ -14,6 +14,7 @@ use std::ops::Index;
 use std::ops::IndexMut;
 use traits::SquareRoot;
 use num::Zero;
+use num::Float;
 
 //    this seems to be blocked by https://github.com/rust-lang/rust/issues/34260
 //macro_rules! scalar_times_vector {
@@ -222,6 +223,15 @@ macro_rules! def_vector {
                 let mut sum:Out = Out::zero();
                 $(sum = sum + self.$component * rhs.$component;)+
                 sum
+            }
+
+            pub fn angle(self, rhs: $vector_type<T>) -> T
+                where T: SquareRoot<Output=T> + Float
+            {
+                let len_a = self.length();
+                let len_b = rhs.length();
+                let dot_product = self.dot(rhs);
+                (dot_product / len_a / len_b).acos().to_degrees()
             }
         }
 
