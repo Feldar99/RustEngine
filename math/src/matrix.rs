@@ -317,7 +317,7 @@ impl<T> Mat4<T> where T: Float + Copy + AddAssign<T> + Debug{
 
     pub fn rotate(axis: &Vec3<T>, angle:T) -> Mat4<T> {
 
-        assert!(axis.is_unit());
+        debug_assert!(axis.is_unit());
         let cos = angle.to_radians().cos();
         let sin = angle.to_radians().sin();
         let mut result3 = Mat3::<T>::one() * cos;
