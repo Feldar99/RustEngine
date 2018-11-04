@@ -407,4 +407,24 @@ mod tests {
         assert_approx_eq!(opposite_collinear , opposite_collinear_reversed, EPSILON);
         assert_approx_eq!(obtuse             , obtuse_reversed,             EPSILON);
     }
+
+    #[test]
+    fn vectors_can_swizzle() {
+        let v4 = Vec4{x: 1, y: 2, z: 3, w: 4};
+        let v3 = Vec3{x: 5, y: 6, z: 7};
+        let v2 = Vec2{x: 8, y: 9};
+        let swizzle1 = v4.wyxx();
+        assert_eq!(v4.w, swizzle1.x);
+        assert_eq!(v4.y, swizzle1.y);
+        assert_eq!(v4.x, swizzle1.z);
+        assert_eq!(v4.x, swizzle1.w);
+        let swizzle2:Vec2<i32> = v3.yz();
+        assert_eq!(v3.y, swizzle2.x);
+        assert_eq!(v3.z, swizzle2.y);
+        let swizzle3:Vec3<i32> = v2.xyx();
+        assert_eq!(v2.x, swizzle3.x);
+        assert_eq!(v2.y, swizzle3.y);
+        assert_eq!(v2.x, swizzle3.z);
+
+    }
 }

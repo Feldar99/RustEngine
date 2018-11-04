@@ -240,6 +240,9 @@ macro_rules! def_vector {
 def_vector!(Vec4, {x, y, z, w});
 def_vector!(Vec3, {x, y, z});
 def_vector!(Vec2, {x, y});
+def_vector!(Vec1, {x});
+
+include!(concat!(env!("OUT_DIR"), "/swizzle_gen.rs"));
 
 impl<T: num::Num + Copy> Vec3<T> {
 
